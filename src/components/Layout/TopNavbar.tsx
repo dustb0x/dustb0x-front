@@ -4,15 +4,13 @@ import { APP_NAME } from '@/config/constants/app'
 import { PAGES } from '@/config/constants/pages'
 import { useRouter } from 'next/router'
 
-// WalletConnect
-import WalletConnectQRCodeModal from '@walletconnect/qrcode-modal'
-
 // Next UI
 import { Button, Navbar, Text } from '@nextui-org/react'
 
 // Components
 import ConnectingWalletButton from '@/components/Button/ConnectingWalletButton'
 import ConnectWalletButton from '@/components/Button/ConnectWalletButton'
+import ConnectWalletModal from '@/components/Modal/ConnectWalletModal'
 import LinkButton from '@/components/Button/LinkButton'
 
 interface TopNavbarProps {
@@ -27,15 +25,11 @@ const TopNavbar: React.FC<TopNavbarProps> = ({
   const router = useRouter()
 
   const [path, setPath] = React.useState<string>('')
+  const [connectWalletModel, setConnectWalletModal] = React.useState<boolean>(false)
 
   const openWalletConnect = () => {
     console.log('openWalletConnect')
-    WalletConnectQRCodeModal.open(
-      'https://nodejs.org/en/',
-      () => {
-        console.log("QR Code Modal closed");
-      }
-    )
+    setConnectWalletModal(true)
   }
 
   React.useEffect(() => {
@@ -62,12 +56,16 @@ const TopNavbar: React.FC<TopNavbarProps> = ({
               </Navbar.Item>
             ) : (
               <Navbar.Item>
-                <Button onClick={() => openWalletConnect()}>test</Button>
+                <ConnectWalletButton onClick={() => openWalletConnect()} />
               </Navbar.Item>
             )
           )}
         </Navbar.Content>
       </Navbar>
+      <ConnectWalletModal
+        isOpen={connectWalletModel}
+        setIsOpen={setConnectWalletModal}
+      />
     </>
   )
 }
