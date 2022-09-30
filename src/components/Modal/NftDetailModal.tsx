@@ -8,12 +8,14 @@ interface NftDetailModalProps {
   isOpen: boolean
   setIsOpen: React.Dispatch<React.SetStateAction<boolean>>
   isLoading?: boolean
+  nft: any
 }
 
 const NftDetailModal: React.FC<NftDetailModalProps> = ({
   isOpen,
   setIsOpen,
-  isLoading
+  isLoading,
+  nft
 }) => {
   const closeHandler = () => {
     setIsOpen(false);
@@ -39,13 +41,15 @@ const NftDetailModal: React.FC<NftDetailModalProps> = ({
           NFT once discarded cannot be recovered.
         </Text>
         <Text>
-          NFT Contract Address: <br />
-          name: <br />
-          symbol: <br />
-          tokenId: <br />
+          Contract type: {nft.contractType}<br />
+          NFT contract address: {nft.tokenAddress}<br />
+          Token ID: {nft.tokenId}<br />
+          Name: {nft.name}<br />
+          Symbol: {nft.symbol}<br />
+          {nft}
         </Text>
         <Image
-          src="./drops-p2dJC3aIeHg7sQh7_png_1428.png"
+          src={nft.metadata?.image}
           showSkeleton
           alt="Default Image"
         />

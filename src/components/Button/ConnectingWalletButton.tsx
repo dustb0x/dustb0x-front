@@ -1,20 +1,26 @@
-// Comoponents
-import BaseButton from "./BaseButton"
+// Con
+import { MAIN_COLOR } from '@/config/constants/colors'
+
+// Next UI
+import { Button } from '@nextui-org/react'
 
 interface ConnectingWalletButtonProps {
-  onClick?: React.MouseEventHandler<HTMLButtonElement>
+  logout: () => Promise<void>
 }
 
 const ConnectingWalletButton: React.FC<ConnectingWalletButtonProps> = ({
-  onClick
+  logout
 }) => {
   return (
-    <BaseButton
-      title="Connectiong Wallet"
+    <Button
+      id="connectiong-wallet-button"
+      color={MAIN_COLOR}
       auto
       flat
-      onClick={onClick}
-    />
+      onClick={logout}
+    >
+      Connectiong Wallet
+    </Button>
   )
 }
 

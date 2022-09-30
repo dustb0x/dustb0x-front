@@ -1,8 +1,9 @@
-// Next UI
-import { Link } from '@nextui-org/react'
+// Config
+import { MAIN_COLOR } from '@/config/constants/colors'
+import { useRouter } from 'next/router'
 
-// Conponents
-import BaseButton from '@/components/Button/BaseButton'
+// Next UI
+import { Button } from '@nextui-org/react'
 
 interface LinkButtonProps {
   title: string
@@ -13,14 +14,18 @@ const LinkButton: React.FC<LinkButtonProps> = ({
   title,
   href
 }) => {
+  const router = useRouter()
+
   return (
-    <BaseButton
-      title={title}
+    <Button
+      id="link-button"
+      color={MAIN_COLOR}
       auto
       flat
-      as={Link}
-      href={href}
-    />
+      onClick={() => router.push(href)}
+    >
+      {title}
+    </Button>
   )
 }
 

@@ -1,6 +1,8 @@
 // Config
 import React from 'react'
 import styles from '@/styles/Home.module.css'
+import { NEXT_APIS } from '@/config/constants/apis'
+import { useMoralis } from 'react-moralis'
 
 // Next UI
 import { Card, Col, Container, Grid, Row, Text } from '@nextui-org/react'
@@ -12,21 +14,60 @@ import PageMeta from '@/components/Layout/PageMeta'
 import TopNavbar from '@/components/Layout/TopNavbar'
 
 const AppView: React.FC = () => {
+  const { authenticate, isAuthenticated, logout, account, chainId } = useMoralis()
+
   const [isOpen, setIsOpen] = React.useState<boolean>(false)
   const [isCompletedModal, setIsCompletedModal] = React.useState<boolean>(false)
+  const [nfts, setNfts] = React.useState([])
+  const [nft, setNft] = React.useState({})
 
-  const [isConnected, setIsConnected] = React.useState<boolean>(false)
-  const [nfts, setNfts] = React.useState([{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}])
+  const openNftDetailModal = (nftData: any) => {
+    setNft(nftData)
+    setIsOpen(true)
+  }
+
+  const formatNftTitle = (symbol: string, tokenId: string | number) => {
+    let title = `${symbol} # ${tokenId}`
+    if (title.length > 20) {
+      const str = title.toString().substring(0, 20)
+      title = `${str}...`
+    } 
+
+    return title
+  }
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      if (account && chainId) {
+        const params = {
+          address: account,
+          chain: chainId
+        }
+        const query = new URLSearchParams(params)
+        fetch(`${NEXT_APIS.v1.nfts}?${query}`, {})
+        .then((data) => {
+          data.json()
+            .then((data) => {
+              setNfts(data)
+              console.log(data)
+            })
+        })
+      }
+    } else {
+      setNfts([])
+    }
+  }, [isAuthenticated, account, chainId, setNfts])
 
   return (
     <>
       <PageMeta />
       <TopNavbar
-        isConnected={isConnected}
-        setIsConnected={setIsConnected}
+        isAuthenticated={isAuthenticated}
+        authenticate={authenticate}
+        logout={logout}
       />
       <div className={styles.container}>
-        {!isConnected ? (
+        {!isAuthenticated ? (
           <Container>
             <Row justify="center" align="center">
               <Text
@@ -105,20 +146,21 @@ const AppView: React.FC = () => {
               }}
               justify="center"
             >
-              {nfts.map(() => {
+              {nfts.map((data: any) => {
                 return (
                   <Grid xs={12} sm={2} justify="center">
                     <Card
+                      id={`card-${data.id}`}
                       isPressable
                       isHoverable
                       css={{ 
                         m: 10
                       }}
-                      onClick={() => setIsOpen(true)}
+                      onClick={() => openNftDetailModal(data)}
                     >
                       <Card.Body css={{ p: 0 }}>
                         <Card.Image
-                          src="./drops-p2dJC3aIeHg7sQh7_png_1428.png"
+                          src={data.metadata.image}
                           width="100%"
                           height="100%"
                           objectFit="cover"
@@ -138,7 +180,7 @@ const AppView: React.FC = () => {
                         <Row>
                           <Col>
                             <Text color="#000" size={12}>
-                              DROP'S # 3011
+                              {formatNftTitle(data.symbol, data.tokenId)}
                             </Text>
                             <Text color="#000" size={12}>
                               METAKAWAII
@@ -157,6 +199,7 @@ const AppView: React.FC = () => {
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           isLoading={false}
+          nft={nft}
         />
         <CompletedModal
           isOpen={isCompletedModal}

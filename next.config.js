@@ -10,6 +10,16 @@ const nextConfig = {
     dustb0xContractAddress: process.env.DUSTB0X_CONTRACT_ADDRESS,
     dustb0xOwnerAddress: process.env.DUSTB0X_OWNER_ADDRESS
   },
+  webpack: (config) => {
+    // eslint-disable-next-line no-param-reassign
+    config.ignoreWarnings = [
+      {
+        message:
+          /(magic-sdk|@walletconnect\/web3-provider|@web3auth\/web3auth)/,
+      },
+    ];
+    return config;
+  },
 }
 
 module.exports = nextConfig

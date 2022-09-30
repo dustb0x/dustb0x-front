@@ -1,11 +1,13 @@
 // Config
 import React from 'react'
+import Moralis from 'moralis-v1'
+import { AuthenticateOptions } from 'react-moralis/lib/hooks/core/useMoralis/_useMoralisAuth'
 import { APP_NAME } from '@/config/constants/app'
 import { PAGES } from '@/config/constants/pages'
 import { useRouter } from 'next/router'
 
 // Next UI
-import { Button, Navbar, Text } from '@nextui-org/react'
+import { Navbar, Text } from '@nextui-org/react'
 
 // Components
 import ConnectingWalletButton from '@/components/Button/ConnectingWalletButton'
@@ -14,23 +16,20 @@ import ConnectWalletModal from '@/components/Modal/ConnectWalletModal'
 import LinkButton from '@/components/Button/LinkButton'
 
 interface TopNavbarProps {
-  isConnected: boolean
-  setIsConnected: React.Dispatch<React.SetStateAction<boolean>>
+  isAuthenticated: boolean
+  authenticate: (options?: AuthenticateOptions | undefined) => Promise<Moralis.User<Moralis.Attributes> | undefined>
+  logout: () => Promise<void>
 }
 
 const TopNavbar: React.FC<TopNavbarProps> = ({
-  isConnected,
-  setIsConnected
+  isAuthenticated,
+  authenticate,
+  logout
 }) => {
   const router = useRouter()
 
   const [path, setPath] = React.useState<string>('')
   const [connectWalletModel, setConnectWalletModal] = React.useState<boolean>(false)
-
-  const openWalletConnect = () => {
-    console.log('openWalletConnect')
-    setConnectWalletModal(true)
-  }
 
   React.useEffect(() => {
     setPath(router.asPath)
@@ -46,17 +45,17 @@ const TopNavbar: React.FC<TopNavbarProps> = ({
         </Navbar.Brand>
         <Navbar.Content>
           {path !== PAGES.app.index ? (
-            <Navbar.Item>
+            <Navbar.Item id="navbar-item-1">
               <LinkButton title="Launch App" href={PAGES.app.index} />
             </Navbar.Item>
           ): (
-            isConnected ? (
-              <Navbar.Item>
-                <ConnectingWalletButton onClick={() => setIsConnected(false)} />
+            isAuthenticated ? (
+              <Navbar.Item id="navbar-item-2">
+                <ConnectingWalletButton logout={logout} />
               </Navbar.Item>
             ) : (
-              <Navbar.Item>
-                <ConnectWalletButton onClick={() => openWalletConnect()} />
+              <Navbar.Item id="navbar-item-3">
+                <ConnectWalletButton authenticate={authenticate} />
               </Navbar.Item>
             )
           )}

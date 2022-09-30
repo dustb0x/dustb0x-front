@@ -1,20 +1,33 @@
-// Comoponents
-import BaseButton from "./BaseButton"
+// Config
+import { MAIN_COLOR } from '@/config/constants/colors'
+import { SIGNING_MESSAGE } from '@/config/constants/auth'
+import Moralis from 'moralis-v1'
+import { AuthenticateOptions } from 'react-moralis/lib/hooks/core/useMoralis/_useMoralisAuth'
+
+// Next UI
+import { Button } from '@nextui-org/react'
 
 interface ConnectWalletButtonProps {
-  onClick?: React.MouseEventHandler<HTMLButtonElement>
+  authenticate: (options?: AuthenticateOptions | undefined) => Promise<Moralis.User<Moralis.Attributes> | undefined>
 }
 
 const ConnectWalletButton: React.FC<ConnectWalletButtonProps> = ({
-  onClick
+  authenticate
 }) => {
   return (
-    <BaseButton
-      title="Connect"
+    <Button
+      id="connect-wallet-button"
+      color={MAIN_COLOR}
       auto
       flat
-      onClick={onClick}
-    />
+      onClick={
+        () => authenticate({
+          signingMessage: SIGNING_MESSAGE
+        })
+      }
+    >
+      Connect
+    </Button>
   )
 }
 
