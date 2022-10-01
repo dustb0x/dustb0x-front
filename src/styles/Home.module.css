@@ -19,6 +19,11 @@
   padding: 100px 0;
 }
 
+.nft_detail_box {
+  inline-size: 382px;
+  overflow-wrap: break-word;
+}
+
 .footer_test {
   text-align: center;
   padding: 30px;

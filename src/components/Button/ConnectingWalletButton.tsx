@@ -19,7 +19,7 @@ const ConnectingWalletButton: React.FC<ConnectingWalletButtonProps> = ({
       flat
       onClick={logout}
     >
-      Connectiong Wallet
+      Connected
     </Button>
   )
 }
